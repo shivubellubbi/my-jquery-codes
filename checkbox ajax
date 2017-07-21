@@ -1,0 +1,65 @@
+<input type="checkbox" val=1 name="s[]">
+<input type="checkbox" val=2 name="s[]">
+<input type="checkbox" val=3 name="s[]">
+<input type="checkbox" val=4 name="s[]">
+<input type="checkbox" val=5 name="s[]">
+
+<script>
+
+  $('input[type="checkbox"]').change(function(event) {
+      searchpropertyfunction();
+  });
+
+  public function searchpropertyfunction(){
+    var features=[];
+             $('input[type=checkbox]').each(function () {
+                 if (this.checked) {
+                    features.push($(this).val());
+
+                 }
+              });
+              $.ajax({
+                url: "{{route('homesearch')}}",
+                type: "GET",
+                data: {
+                    features:features,
+                },
+                success: function (d) {
+                    var pagination=d.pagination_liks;
+                     console.log(d);
+                     var obj = jQuery.parseJSON(d.results);
+                     $.each(obj.data,function(i,v){
+                     
+                     
+                        /*  do stuff */
+              },
+                error:function(d)
+                {
+                    alert('Sorry.!');
+
+                },
+            });
+
+        }
+  
+  }
+
+</script>
+
+
+<php 
+/* laravel frame work */
+
+$ajax_paginate = $result->paginate(15);
+		if ($req->ajax()) { //if ajax query
+			$pagination_liks         = htmlentities($ajax_paginate->appends($_GET)->links());//laravel
+      
+			$data['results']         = json_encode($ajax_paginate);
+			return $data;
+		}
+		$ajax_paginate_linnks = $ajax_paginate->appends($_GET)->links();
+    
+    
+		return view('frontend.indexsearch', compact('ajax_paginate', 'ajax_paginate_linnks'));
+
+?>
